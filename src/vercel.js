@@ -39,7 +39,7 @@ const init = () => {
 		}
 
 		if (VERCEL_TARGET) {
-			commandArguments.push(`--target${ VERCEL_TARGET }`)
+			commandArguments.push(`--target=${ VERCEL_TARGET }`)
 		}
 
 		if (PREBUILT) {
