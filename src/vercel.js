@@ -8,6 +8,7 @@ const {
 	VERCEL_SCOPE,
 	VERCEL_ORG_ID,
 	VERCEL_PROJECT_ID,
+	VERCEL_TARGET,
 	SHA,
 	USER,
 	REPOSITORY,
@@ -35,6 +36,10 @@ const init = () => {
 
 		if (PRODUCTION) {
 			commandArguments.push('--prod')
+		}
+
+		if (VERCEL_TARGET && !PRODUCTION) {
+			commandArguments.push(`--target${ VERCEL_TARGET }`)
 		}
 
 		if (PREBUILT) {
