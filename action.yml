@@ -21,11 +21,11 @@ inputs:
     required: false
   PRODUCTION:
     description: |
-      Create a production deployment (default: true, false for PR deployments). Takes priority over VERCEL_TARGET.
+      Create a production deployment (default: true, false for PR deployments).
     required: false
   VERCEL_TARGET:
     description: |
-      Specify a custom vercel environment target (default: true, false for PR deployments).
+      Specify a custom vercel environment target (default: true, false for PR deployments). Takes priority over PRODUCTION.
     required: false
   PREBUILT:
     description: |
