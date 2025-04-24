@@ -34,11 +34,11 @@ const init = () => {
 			commandArguments.push(`--scope=${ VERCEL_SCOPE }`)
 		}
 
-		if (PRODUCTION) {
+		if (PRODUCTION && !VERCEL_TARGET) {
 			commandArguments.push('--prod')
 		}
 
-		if (VERCEL_TARGET && !PRODUCTION) {
+		if (VERCEL_TARGET) {
 			commandArguments.push(`--target${ VERCEL_TARGET }`)
 		}
 

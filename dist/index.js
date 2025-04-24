@@ -15915,7 +15915,6 @@ const context = {
 	}),
 	VERCEL_TARGET: parser.getInput({
 		key: 'VERCEL_TARGET',
-		default: IS_PR ? 'preview' : 'production'
 	}),
 	GITHUB_DEPLOYMENT: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT',
@@ -16272,11 +16271,11 @@ const init = () => {
 			commandArguments.push(`--scope=${ VERCEL_SCOPE }`)
 		}
 
-		if (PRODUCTION) {
+		if (PRODUCTION && !VERCEL_TARGET) {
 			commandArguments.push('--prod')
 		}
 
-		if (VERCEL_TARGET && !PRODUCTION) {
+		if (VERCEL_TARGET) {
 			commandArguments.push(`--target${ VERCEL_TARGET }`)
 		}
 

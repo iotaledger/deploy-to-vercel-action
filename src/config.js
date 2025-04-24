@@ -29,7 +29,6 @@ const context = {
 	}),
 	VERCEL_TARGET: parser.getInput({
 		key: 'VERCEL_TARGET',
-		default: IS_PR ? 'preview' : 'production'
 	}),
 	GITHUB_DEPLOYMENT: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT',
