@@ -25,7 +25,7 @@ inputs:
     required: false
   VERCEL_TARGET:
     description: |
-      Specify a custom vercel environment target (default: true, false for PR deployments). Takes priority over PRODUCTION.
+      Specify a custom Vercel environment target, such as 'Production' or 'Preview'. Takes priority over PRODUCTION.
     required: false
   PREBUILT:
     description: |
