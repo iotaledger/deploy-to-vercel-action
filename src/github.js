@@ -9,7 +9,8 @@ const {
 	REF,
 	LOG_URL,
 	PR_LABELS,
-	GITHUB_DEPLOYMENT_ENV
+	GITHUB_DEPLOYMENT_ENV,
+	COMMENT_IDENTIFIER
 } = require('./config')
 
 const init = () => {
@@ -58,7 +59,17 @@ const init = () => {
 
 		if (data.length < 1) return
 
-		const comment = data.find((comment) => comment.body.includes('This pull request has been deployed to Vercel.'))
+		const comment = data.find((comment) => {
+			// base check for existing deploy comment
+			if (!comment.body.includes('This pull request has been deployed to Vercel.')) return false
+
+			// if an identifier is provided, only match comments that contain the identifier HTML comment
+			if (COMMENT_IDENTIFIER) {
+				return comment.body.includes(`<!-- deploy-to-vercel-action:${ COMMENT_IDENTIFIER } -->`)
+			}
+
+			return true
+		})
 		if (comment) {
 			await client.issues.deleteComment({
 				owner: USER,
@@ -72,7 +83,12 @@ const init = () => {
 
 	const createComment = async (body) => {
 		// Remove indentation
-		const dedented = body.replace(/^[^\S\n]+/gm, '')
+		let dedented = body.replace(/^[^\S\n]+/gm, '')
+
+		// Append identifier as an HTML comment so we can find/delete/update this comment later
+		if (COMMENT_IDENTIFIER) {
+			dedented = `${ dedented }\n\n<!-- deploy-to-vercel-action:${ COMMENT_IDENTIFIER } -->`
+		}
 
 		const comment = await client.issues.createComment({
 			owner: USER,

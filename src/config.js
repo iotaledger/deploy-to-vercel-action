@@ -76,6 +76,9 @@ const context = {
 		key: 'GITHUB_REPOSITORY',
 		required: true
 	}),
+	COMMENT_IDENTIFIER: parser.getInput({
+		key: 'COMMENT_IDENTIFIER'
+	}),
 	GITHUB_DEPLOYMENT_ENV: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT_ENV'
 	}),

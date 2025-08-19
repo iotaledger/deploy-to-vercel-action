@@ -39,6 +39,10 @@ inputs:
     description: |
       Create PR comment when deploying (default: true).
     required: false
+  COMMENT_IDENTIFIER:
+    description: |
+      Optional identifier to include (as an HTML comment) in PR comments created by this Action. Use this to distinguish comments for different apps in the same PR (for example: `app-frontend`). When set, delete/replace operations will only affect comments that match the identifier.
+    required: false
   DELETE_EXISTING_COMMENT:
     description: |
       Delete existing PR comment when redeploying PR (default: true).
