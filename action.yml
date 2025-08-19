@@ -83,6 +83,10 @@ inputs:
     description: |
       Working directory for the Vercel CLI.
     required: false
+  ARCHIVE:
+    description: |
+      Compress the deployment code into an archive before uploading it. Provide a format (for example: 'tgz').
+    required: false
   FORCE:
     description: |
       Used to skip the build cache.

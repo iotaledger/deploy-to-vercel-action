@@ -87,6 +87,9 @@ const context = {
 	WORKING_DIRECTORY: parser.getInput({
 		key: 'WORKING_DIRECTORY'
 	}),
+	ARCHIVE: parser.getInput({
+		key: 'ARCHIVE'
+	}),
 	BUILD_ENV: parser.getInput({
 		key: 'BUILD_ENV',
 		type: 'array'

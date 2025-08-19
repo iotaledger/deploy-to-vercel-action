@@ -17,7 +17,8 @@ const {
 	BUILD_ENV,
 	PREBUILT,
 	WORKING_DIRECTORY,
-	FORCE
+	FORCE,
+	ARCHIVE
 } = require('./config')
 
 const init = () => {
@@ -48,6 +49,10 @@ const init = () => {
 
 		if (FORCE) {
 			commandArguments.push('--force')
+		}
+
+		if (ARCHIVE) {
+			commandArguments.push(`--archive=${ ARCHIVE }`)
 		}
 
 		if (commit) {
