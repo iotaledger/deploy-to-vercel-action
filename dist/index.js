@@ -15914,7 +15914,7 @@ const context = {
 		default: !IS_PR
 	}),
 	VERCEL_TARGET: parser.getInput({
-		key: 'VERCEL_TARGET',
+		key: 'VERCEL_TARGET'
 	}),
 	GITHUB_DEPLOYMENT: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT',
@@ -15962,6 +15962,9 @@ const context = {
 		key: 'GITHUB_REPOSITORY',
 		required: true
 	}),
+	COMMENT_IDENTIFIER: parser.getInput({
+		key: 'COMMENT_IDENTIFIER'
+	}),
 	GITHUB_DEPLOYMENT_ENV: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT_ENV'
 	}),
@@ -15972,6 +15975,9 @@ const context = {
 	}),
 	WORKING_DIRECTORY: parser.getInput({
 		key: 'WORKING_DIRECTORY'
+	}),
+	ARCHIVE: parser.getInput({
+		key: 'ARCHIVE'
 	}),
 	BUILD_ENV: parser.getInput({
 		key: 'BUILD_ENV',
@@ -16060,8 +16066,21 @@ const {
 	REF,
 	LOG_URL,
 	PR_LABELS,
-	GITHUB_DEPLOYMENT_ENV
+	GITHUB_DEPLOYMENT_ENV,
+	COMMENT_IDENTIFIER
 } = __nccwpck_require__(4570)
+
+const DEPLOYMENT_COMMENT_TEXT = 'This pull request has been deployed to Vercel.'
+const COMMENT_MARKER_PREFIX = 'deploy-to-vercel-action:'
+
+const getCommentMarker = () => {
+	if (typeof COMMENT_IDENTIFIER !== 'string') return
+
+	const identifier = COMMENT_IDENTIFIER.trim()
+	if (!identifier) return
+
+	return `<!-- ${ COMMENT_MARKER_PREFIX }${ identifier } -->`
+}
 
 const init = () => {
 	const client = github.getOctokit(GITHUB_TOKEN, { previews: [ 'flash', 'ant-man' ] })
@@ -16101,15 +16120,23 @@ const init = () => {
 	}
 
 	const deleteExistingComment = async () => {
-		const { data } = await client.issues.listComments({
+		const data = await client.paginate(client.issues.listComments, {
 			owner: USER,
 			repo: REPOSITORY,
-			issue_number: PR_NUMBER
+			issue_number: PR_NUMBER,
+			per_page: 100
 		})
 
 		if (data.length < 1) return
 
-		const comment = data.find((comment) => comment.body.includes('This pull request has been deployed to Vercel.'))
+		const marker = getCommentMarker()
+		const comment = data.find((comment) => {
+			if (!comment.body || !comment.body.includes(DEPLOYMENT_COMMENT_TEXT)) return false
+
+			if (marker) return comment.body.includes(marker)
+
+			return !comment.body.includes(`<!-- ${ COMMENT_MARKER_PREFIX }`)
+		})
 		if (comment) {
 			await client.issues.deleteComment({
 				owner: USER,
@@ -16123,7 +16150,12 @@ const init = () => {
 
 	const createComment = async (body) => {
 		// Remove indentation
-		const dedented = body.replace(/^[^\S\n]+/gm, '')
+		let dedented = body.replace(/^[^\S\n]+/gm, '')
+
+		const marker = getCommentMarker()
+		if (marker) {
+			dedented = `${ dedented }\n\n${ marker }`
+		}
 
 		const comment = await client.issues.createComment({
 			owner: USER,
@@ -16254,7 +16286,8 @@ const {
 	BUILD_ENV,
 	PREBUILT,
 	WORKING_DIRECTORY,
-	FORCE
+	FORCE,
+	ARCHIVE
 } = __nccwpck_require__(4570)
 
 const init = () => {
@@ -16285,6 +16318,10 @@ const init = () => {
 
 		if (FORCE) {
 			commandArguments.push('--force')
+		}
+
+		if (ARCHIVE) {
+			commandArguments.push(`--archive=${ ARCHIVE }`)
 		}
 
 		if (commit) {

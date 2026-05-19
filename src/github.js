@@ -13,6 +13,18 @@ const {
 	COMMENT_IDENTIFIER
 } = require('./config')
 
+const DEPLOYMENT_COMMENT_TEXT = 'This pull request has been deployed to Vercel.'
+const COMMENT_MARKER_PREFIX = 'deploy-to-vercel-action:'
+
+const getCommentMarker = () => {
+	if (typeof COMMENT_IDENTIFIER !== 'string') return
+
+	const identifier = COMMENT_IDENTIFIER.trim()
+	if (!identifier) return
+
+	return `<!-- ${ COMMENT_MARKER_PREFIX }${ identifier } -->`
+}
+
 const init = () => {
 	const client = github.getOctokit(GITHUB_TOKEN, { previews: [ 'flash', 'ant-man' ] })
 
@@ -51,24 +63,22 @@ const init = () => {
 	}
 
 	const deleteExistingComment = async () => {
-		const { data } = await client.issues.listComments({
+		const data = await client.paginate(client.issues.listComments, {
 			owner: USER,
 			repo: REPOSITORY,
-			issue_number: PR_NUMBER
+			issue_number: PR_NUMBER,
+			per_page: 100
 		})
 
 		if (data.length < 1) return
 
+		const marker = getCommentMarker()
 		const comment = data.find((comment) => {
-			// base check for existing deploy comment
-			if (!comment.body.includes('This pull request has been deployed to Vercel.')) return false
+			if (!comment.body || !comment.body.includes(DEPLOYMENT_COMMENT_TEXT)) return false
 
-			// if an identifier is provided, only match comments that contain the identifier HTML comment
-			if (COMMENT_IDENTIFIER) {
-				return comment.body.includes(`<!-- deploy-to-vercel-action:${ COMMENT_IDENTIFIER } -->`)
-			}
+			if (marker) return comment.body.includes(marker)
 
-			return true
+			return !comment.body.includes(`<!-- ${ COMMENT_MARKER_PREFIX }`)
 		})
 		if (comment) {
 			await client.issues.deleteComment({
@@ -85,9 +95,9 @@ const init = () => {
 		// Remove indentation
 		let dedented = body.replace(/^[^\S\n]+/gm, '')
 
-		// Append identifier as an HTML comment so we can find/delete/update this comment later
-		if (COMMENT_IDENTIFIER) {
-			dedented = `${ dedented }\n\n<!-- deploy-to-vercel-action:${ COMMENT_IDENTIFIER } -->`
+		const marker = getCommentMarker()
+		if (marker) {
+			dedented = `${ dedented }\n\n${ marker }`
 		}
 
 		const comment = await client.issues.createComment({

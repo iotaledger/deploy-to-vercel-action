@@ -41,7 +41,7 @@ inputs:
     required: false
   COMMENT_IDENTIFIER:
     description: |
-      Optional identifier to include (as an HTML comment) in PR comments created by this Action. Use this to distinguish comments for different apps in the same PR (for example: `app-frontend`). When set, delete/replace operations will only affect comments that match the identifier.
+      Optional identifier to include (as an HTML comment) in PR comments created by this Action. Use this to distinguish comments for different apps in the same PR (for example: `app-frontend`). When set, delete/replace operations will only affect comments that match the identifier. When unset, only unscoped comments without this Action's identifier marker are replaced.
     required: false
   DELETE_EXISTING_COMMENT:
     description: |

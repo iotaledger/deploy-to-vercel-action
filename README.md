@@ -85,7 +85,7 @@ Here are all the inputs [deploy-to-vercel-action](https://github.com/BetaHuhn/de
 | `PRODUCTION` | Create a production deployment on Vercel and GitHub. | **No** | true (false for PR deployments) |
 | `DELETE_EXISTING_COMMENT` | Delete existing PR comment when redeploying PR | **No** | true |
 | `CREATE_COMMENT` | Create PR comment when deploying | **No** | true |
-| `COMMENT_IDENTIFIER` | Optional identifier to include (as an HTML comment) in PR comments created by this Action. Use this to distinguish comments for different apps in the same PR (for example: `app-frontend`). When set, delete/replace operations will only affect comments that match the identifier. | **No** | N/A |
+| `COMMENT_IDENTIFIER` | Optional identifier to include (as an HTML comment) in PR comments created by this Action. Use this to distinguish comments for different apps in the same PR (for example: `app-frontend`). When set, delete/replace operations will only affect comments that match the identifier. When unset, only unscoped comments without this Action's identifier marker are replaced. | **No** | N/A |
 | `ATTACH_COMMIT_METADATA` | Attach metadata about the commit to the Vercel deployment | **No** | true |
 | `TRIM_COMMIT_MESSAGE` | When passing meta data to Vercel deployment, trim the commit message to subject only | **No** | false |
 | `DEPLOY_PR_FROM_FORK` | Allow PRs which originate from a fork to be deployed (more info [below](#deploying-a-pr-made-from-a-fork-or-dependabot)) | **No** | false |
