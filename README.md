@@ -85,6 +85,7 @@ Here are all the inputs [deploy-to-vercel-action](https://github.com/BetaHuhn/de
 | `PRODUCTION` | Create a production deployment on Vercel and GitHub. | **No** | true (false for PR deployments) |
 | `DELETE_EXISTING_COMMENT` | Delete existing PR comment when redeploying PR | **No** | true |
 | `CREATE_COMMENT` | Create PR comment when deploying | **No** | true |
+| `COMMENT_IDENTIFIER` | Optional identifier to include (as an HTML comment) in PR comments created by this Action. Use this to distinguish comments for different apps in the same PR (for example: `app-frontend`). When set, delete/replace operations will only affect comments that match the identifier. When unset, only unscoped comments without this Action's identifier marker are replaced. | **No** | N/A |
 | `ATTACH_COMMIT_METADATA` | Attach metadata about the commit to the Vercel deployment | **No** | true |
 | `TRIM_COMMIT_MESSAGE` | When passing meta data to Vercel deployment, trim the commit message to subject only | **No** | false |
 | `DEPLOY_PR_FROM_FORK` | Allow PRs which originate from a fork to be deployed (more info [below](#deploying-a-pr-made-from-a-fork-or-dependabot)) | **No** | false |
@@ -94,6 +95,8 @@ Here are all the inputs [deploy-to-vercel-action](https://github.com/BetaHuhn/de
 | `VERCEL_SCOPE` | Execute commands from a different Vercel team or user | **No** | N/A |
 | `BUILD_ENV` | Provide environment variables to the build step | **No** | N/A |
 | `WORKING_DIRECTORY` | Working directory for the Vercel CLI | **No** | N/A |
+| `ARCHIVE` | Compress the deployment code into an archive before uploading. Provide a format (for example: `tgz`). Use this when your deployment contains many files to avoid API/file limits. | **No** | N/A |
+| `LOGS` | Stream the Vercel build logs during deployment so a failed build's error is visible in the Action output. | **No** | false |
 | `FORCE` | Used to skip the build cache. | **No** | false |
 | `PREBUILT` | Deploy a prebuilt Vercel Project. | **No** | false |
 | `VERCEL_TARGET` | Specify a custom vercel environment target. Takes priority over `PRODUCTION`. | **No** | `Production` or `Preview` |
@@ -212,6 +215,23 @@ jobs:
 ```
 
 > **Note:** Since the first of March 2021 workflow runs which are triggered by a Dependabot PR will act as if they are made from a fork and have the same limitations described above (more info in [GitHub's Changelog](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/)), except that DEPLOY_PR_FROM_FORK doesn't have to be set to true.
+
+### Archive deployments (avoid file limits)
+
+When your project contains thousands of files you can compress the deployment into an archive before uploading to avoid Vercel file limits. Provide the archive format as the `ARCHIVE` input (for example `tgz`). Note that archiving can make some deployments slower because it negates the CLI's source-file caching.
+
+**.github/workflows/deploy.yml**
+
+```yml
+- name: Deploy to Vercel Action
+  uses: BetaHuhn/deploy-to-vercel-action@v1
+  with:
+    GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    ARCHIVE: tgz
+```
 
 ## 📖 Examples
 

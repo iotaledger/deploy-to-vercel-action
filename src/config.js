@@ -28,7 +28,7 @@ const context = {
 		default: !IS_PR
 	}),
 	VERCEL_TARGET: parser.getInput({
-		key: 'VERCEL_TARGET',
+		key: 'VERCEL_TARGET'
 	}),
 	GITHUB_DEPLOYMENT: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT',
@@ -76,6 +76,9 @@ const context = {
 		key: 'GITHUB_REPOSITORY',
 		required: true
 	}),
+	COMMENT_IDENTIFIER: parser.getInput({
+		key: 'COMMENT_IDENTIFIER'
+	}),
 	GITHUB_DEPLOYMENT_ENV: parser.getInput({
 		key: 'GITHUB_DEPLOYMENT_ENV'
 	}),
@@ -86,6 +89,9 @@ const context = {
 	}),
 	WORKING_DIRECTORY: parser.getInput({
 		key: 'WORKING_DIRECTORY'
+	}),
+	ARCHIVE: parser.getInput({
+		key: 'ARCHIVE'
 	}),
 	BUILD_ENV: parser.getInput({
 		key: 'BUILD_ENV',
@@ -99,6 +105,11 @@ const context = {
 	RUNNING_LOCAL: process.env.RUNNING_LOCAL === 'true',
 	FORCE: parser.getInput({
 		key: 'FORCE',
+		type: 'boolean',
+		default: false
+	}),
+	LOGS: parser.getInput({
+		key: 'LOGS',
 		type: 'boolean',
 		default: false
 	})
