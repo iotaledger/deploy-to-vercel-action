@@ -15993,6 +15993,11 @@ const context = {
 		key: 'FORCE',
 		type: 'boolean',
 		default: false
+	}),
+	LOGS: parser.getInput({
+		key: 'LOGS',
+		type: 'boolean',
+		default: false
 	})
 }
 
@@ -16287,7 +16292,8 @@ const {
 	PREBUILT,
 	WORKING_DIRECTORY,
 	FORCE,
-	ARCHIVE
+	ARCHIVE,
+	LOGS
 } = __nccwpck_require__(4570)
 
 const init = () => {
@@ -16322,6 +16328,10 @@ const init = () => {
 
 		if (ARCHIVE) {
 			commandArguments.push(`--archive=${ ARCHIVE }`)
+		}
+
+		if (LOGS) {
+			commandArguments.push('--logs')
 		}
 
 		if (commit) {

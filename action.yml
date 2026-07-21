@@ -95,6 +95,10 @@ inputs:
     description: |
       Used to skip the build cache.
     required: false
+  LOGS:
+    description: |
+      Stream the Vercel build logs during deployment so a failed build's error is visible in the Action output (default: false).
+    required: false
 
 outputs:
   PREVIEW_URL:

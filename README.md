@@ -96,6 +96,7 @@ Here are all the inputs [deploy-to-vercel-action](https://github.com/BetaHuhn/de
 | `BUILD_ENV` | Provide environment variables to the build step | **No** | N/A |
 | `WORKING_DIRECTORY` | Working directory for the Vercel CLI | **No** | N/A |
 | `ARCHIVE` | Compress the deployment code into an archive before uploading. Provide a format (for example: `tgz`). Use this when your deployment contains many files to avoid API/file limits. | **No** | N/A |
+| `LOGS` | Stream the Vercel build logs during deployment so a failed build's error is visible in the Action output. | **No** | false |
 | `FORCE` | Used to skip the build cache. | **No** | false |
 | `PREBUILT` | Deploy a prebuilt Vercel Project. | **No** | false |
 | `VERCEL_TARGET` | Specify a custom vercel environment target. Takes priority over `PRODUCTION`. | **No** | `Production` or `Preview` |
